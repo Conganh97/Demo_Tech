@@ -89,5 +89,4 @@ public class RedisService {
         jedis.publish(channel,message);
     }
 
-
 }

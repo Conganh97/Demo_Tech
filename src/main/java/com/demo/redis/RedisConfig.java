@@ -50,3 +50,5 @@ public class RedisConfig {
         return jedisPool().getResource();
     }
 }
+
+
