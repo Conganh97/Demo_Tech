@@ -30,20 +30,22 @@ public class MinioService {
         }
     }
 
-    public boolean createBucket(String bucket) {
+    public void createBucketIfNotExited(String bucket) {
+        if (isBucketExisted(bucket)) {
+            return;
+        }
         try {
             minioClient.makeBucket(
                     MakeBucketArgs.builder()
                             .bucket(bucket)
                             .build());
         } catch (Exception e) {
-            log.info("Can't create bucket");
-            return false;
+            log.info(MinioError.ME01.name());
         }
-        return true;
     }
 
-    public void uploadFile(String bucket, String objectName, MultipartFile file) {
+    public boolean uploadFile(String bucket, String objectName, MultipartFile file) {
+        createBucketIfNotExited(bucket);
         try (InputStream inputStream = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -53,11 +55,15 @@ public class MinioService {
                             .stream(inputStream, inputStream.available(), -1)
                             .build());
         } catch (Exception e) {
-            log.info("Can't upload file");
+            log.info(MinioError.ME02.name());
+            return false;
         }
+
+        return true;
     }
 
-    public void deleteFile(String bucket, String objectName) {
+    public boolean deleteFile(String bucket, String objectName) {
+        createBucketIfNotExited(bucket);
         try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
@@ -65,24 +71,29 @@ public class MinioService {
                             .object(objectName)
                             .build());
         } catch (Exception e) {
-            log.info("Can't remove file");
+            log.info(MinioError.ME03.name());
+            return false;
         }
+
+        return true;
     }
 
-    public InputStream downloadFile(String bucket, String objcetName) {
+    public InputStream downloadFile(String bucket, String objectName) {
+        createBucketIfNotExited(bucket);
         try {
             return minioClient.getObject(
                     GetObjectArgs.builder()
-                            .object(objcetName)
+                            .object(objectName)
                             .bucket(bucket)
                             .build());
         } catch (Exception e) {
-            log.info("Can't download file");
+            log.info(MinioError.ME04.name());
         }
         return null;
     }
 
     public List<String> getListFileName(String bucket, String path) {
+        createBucketIfNotExited(bucket);
         List<Item> items = new ArrayList<>();
         try {
             Iterable<Result<Item>> resultIterator = minioClient.listObjects(
@@ -96,12 +107,13 @@ public class MinioService {
             }
 
         } catch (Exception e) {
-            log.info("Can't create bucket");
+            log.info(MinioError.ME05.name());
         }
         return items.stream().map(Item::objectName).toList();
     }
 
-    public void putListObject(String bucket, List<MultipartFile> multipartFiles) {
+    public boolean uploadListObject(String bucket, List<MultipartFile> multipartFiles) {
+        createBucketIfNotExited(bucket);
         List<SnowballObject> objectList = toListSnowBall(multipartFiles);
 
         try {
@@ -111,17 +123,34 @@ public class MinioService {
                             .objects(objectList)
                             .build());
         } catch (Exception e) {
-            log.info("Can't upload list file");
+            log.info(MinioError.ME06.name());
+            return false;
+        }
+        return true;
+    }
+
+    public String shareLink(String bucket, String path, int expiry) {
+        try {
+             return  minioClient.getPresignedObjectUrl(
+                     GetPresignedObjectUrlArgs
+                             .builder()
+                             .bucket(bucket)
+                             .object(path)
+                             .expiry(expiry)
+                             .build());
+        } catch (Exception e) {
+            log.info(MinioError.ME06.name());
+            return null;
         }
     }
 
-    public List<SnowballObject> toListSnowBall(List<MultipartFile> multipartFiles) {
+    private List<SnowballObject> toListSnowBall(List<MultipartFile> multipartFiles) {
         List<SnowballObject> listFile = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             try (InputStream inputStream = file.getInputStream()) {
                 listFile.add(new SnowballObject(file.getName(), inputStream, inputStream.available(), ZonedDateTime.now()));
             } catch (Exception e) {
-                log.info("Can't create file snowball", file.getName());
+                log.info(MinioError.ME07.name(), file.getName());
             }
         }
         return listFile;
