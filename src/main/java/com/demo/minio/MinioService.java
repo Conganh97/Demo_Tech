@@ -155,4 +155,15 @@ public class MinioService {
         }
         return listFile;
     }
+
+    public static void main(String[] args) {
+        System.out.println(UCLN(357,234));
+    }
+
+    public static int UCLN(int a, int b){
+        if (b == 0)
+            return a;
+        int temp = a % b;
+        return UCLN(b,temp);
+    }
 }
