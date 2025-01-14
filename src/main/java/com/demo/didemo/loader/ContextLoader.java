@@ -15,16 +15,17 @@ import java.util.Set;
 
 @Slf4j
 public class ContextLoader {
-    private static final ContextLoader INSTANCE = new ContextLoader();
-
     private final Map<String, Object> nameToInstance = new HashMap<>();
 
+    private static class SingletonHolder {
+        private static final ContextLoader INSTANCE = new ContextLoader();
+    }
+
     public static ContextLoader getInstance() {
-        return INSTANCE;
+        return SingletonHolder.INSTANCE;
     }
 
     private ContextLoader() {
-
     }
 
     public synchronized void load(String scanPackage) {
@@ -92,8 +93,8 @@ public class ContextLoader {
     }
 
     private void injectFieldValue(final Object instance) {
-        val fileds = instance.getClass().getDeclaredFields();
-        Arrays.stream(fileds)
+        val fields = instance.getClass().getDeclaredFields();
+        Arrays.stream(fields)
                 .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
                         .anyMatch(a -> a.annotationType() == Autowire.class))
                 .forEach(field -> {

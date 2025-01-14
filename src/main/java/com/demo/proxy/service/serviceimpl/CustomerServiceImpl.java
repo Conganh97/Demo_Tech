@@ -7,6 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomerServiceImpl implements MyService {
     @Override
     public void performTask(String name) {
-        log.info("StaffServiceImpl is performing task: {}", name);
+        log.info("CustomerServiceImpl is performing task: {}", name);
     }
 }
