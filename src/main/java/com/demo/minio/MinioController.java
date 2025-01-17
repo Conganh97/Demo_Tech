@@ -10,10 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.util.List;
 
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("/minio")
-@Tag(name = "Minio Controller", description = "Controller for Minio")
+//@RestController
+//@RequiredArgsConstructor
+//@RequestMapping("/minio")
+//@Tag(name = "Minio Controller", description = "Controller for Minio")
 public class MinioController {
     private static MinioService minioService;
 

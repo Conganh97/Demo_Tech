@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+//@RestController
 @RequiredArgsConstructor
-@Tag(name = "Redis Controller", description = "Controller for Redis")
+//@Tag(name = "Redis Controller", description = "Controller for Redis")
 public class RedisController {
     private final RedisService service;
 

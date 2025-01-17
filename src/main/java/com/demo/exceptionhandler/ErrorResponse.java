@@ -2,10 +2,7 @@ package com.demo.exceptionhandler;
 
 import com.demo.exceptionhandler.error.CommonError;
 import com.demo.exceptionhandler.error.Error;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -14,15 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 public class ErrorResponse {
-
     private LocalDateTime timeStamp;
     private String message;
     private String code;
     private int status;
     private List<FieldError> fieldErrors;
 
-    private ErrorResponse(com.demo.exceptionhandler.error.Error e) {
+    private ErrorResponse(Error e) {
         this.timeStamp = LocalDateTime.now();
         this.message = e.getMessage();
         this.code = e.getCode();
@@ -30,7 +27,7 @@ public class ErrorResponse {
         this.fieldErrors = new ArrayList<>();
     }
 
-    private ErrorResponse(com.demo.exceptionhandler.error.Error code, final List<FieldError> errors) {
+    private ErrorResponse(Error code, final List<FieldError> errors) {
         this.timeStamp = LocalDateTime.now();
         this.message = code.getMessage();
         this.status = code.getStatus();
@@ -38,7 +35,7 @@ public class ErrorResponse {
         this.code = code.getCode();
     }
 
-    public static ErrorResponse of(com.demo.exceptionhandler.error.Error error, BindingResult bindingResult) {
+    public static ErrorResponse of(Error error, BindingResult bindingResult) {
         return new ErrorResponse(error, FieldError.of(bindingResult));
     }
 

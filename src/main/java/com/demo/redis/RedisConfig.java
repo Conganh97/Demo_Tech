@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-@Configuration
-@EnableAutoConfiguration(exclude = {
-        JmxAutoConfiguration.class
-})
+//
+//@Configuration
+//@EnableAutoConfiguration(exclude = {
+//        JmxAutoConfiguration.class
+//})
 public class RedisConfig {
 
     @Value("${redis.host}")
