@@ -1,8 +1,15 @@
 package com.demo.exceptionhandler;
 
+import com.demo.didemo.annotation.Autowire;
 import com.demo.exceptionhandler.error.CommonError;
 import com.demo.exceptionhandler.error.Error;
-import lombok.*;
+import com.demo.i18n.service.MessageService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.catalina.util.StringUtil;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -11,13 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
 public class ErrorResponse {
     private LocalDateTime timeStamp;
     private String message;
     private String code;
     private int status;
     private List<FieldError> fieldErrors;
+
+    @JsonIgnore
+    @Autowire
+    private MessageService messageService;
 
     private ErrorResponse(Error e) {
         this.timeStamp = LocalDateTime.now();
@@ -44,14 +54,14 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(MethodArgumentTypeMismatchException e) {
-        final String value = e.getValue() != null ? e.getValue().toString() : "";
-        final List<ErrorResponse.FieldError> errors = ErrorResponse.FieldError.of(e.getName(), value, e.getErrorCode());
+        final String value = e.getValue() != null ? (String) e.getValue() : "";
+        final List<FieldError> errors = FieldError.of(e.getName(), value, e.getErrorCode());
         return new ErrorResponse(CommonError.INVALID_INPUT_VALUE, errors);
     }
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class FieldError {
+    private static class FieldError {
         private String field;
         private String value;
         private String reason;

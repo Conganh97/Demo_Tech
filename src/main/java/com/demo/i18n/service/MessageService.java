@@ -12,7 +12,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class MessageService {
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
     private final Locale locale = LocaleContextHolder.getLocale();
 
     public String getMessage(String key, Object... args) throws NoSuchMessageException {
