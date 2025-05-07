@@ -13,6 +13,7 @@ import java.util.Set;
 public class ProxyMain {
     public static void main(String[] args) throws Exception {
         proxyImplement();
+        proxyCover();
     }
 
     @SneakyThrows
