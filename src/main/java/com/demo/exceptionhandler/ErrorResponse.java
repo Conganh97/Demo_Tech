@@ -1,6 +1,6 @@
 package com.demo.exceptionhandler;
 
-import com.demo.didemo.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.demo.exceptionhandler.error.CommonError;
 import com.demo.exceptionhandler.error.Error;
 import com.demo.i18n.service.MessageService;
@@ -25,7 +25,7 @@ public class ErrorResponse {
     private List<FieldError> fieldErrors;
 
     @JsonIgnore
-    @Autowire
+    @Autowired
     private MessageService messageService;
 
     private ErrorResponse(Error e) {
